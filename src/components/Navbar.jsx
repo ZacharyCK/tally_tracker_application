@@ -1,6 +1,6 @@
 const Navbar = () => {
   return (
-    <div className="navbar sticky top-0 bg-base-100 mb-20">
+    <div className="navbar z-10 sticky top-0 bg-base-100 mb-10">
         <div className="flex-1">
             <h1 className="text-2xl ml-3"><a href="#">Simple Tally</a></h1>
         </div>
