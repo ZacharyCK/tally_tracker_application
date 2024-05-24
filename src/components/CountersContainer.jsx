@@ -15,11 +15,18 @@ const CountersContainer = () => {
   const addCounter = () => {
     const newQuantity = counterQuantity + 1
     const copyOfCounters = counters.slice()
-    const newCounter = {
+    const lastCounter = copyOfCounters.length ? copyOfCounters[copyOfCounters.length - 1] : null;
+    const newCounter = lastCounter ? {
+      id: lastCounter.id + 1,
+      name: `Counter ${newQuantity}`,
+      count: 0
+    } :
+    {
       id: newQuantity,
       name: `Counter ${newQuantity}`,
       count: 0
-    }
+    };
+    console.log(newCounter)
     copyOfCounters.push(newCounter)
     setCounterQuantity(newQuantity)
     setCounters(copyOfCounters)
@@ -27,34 +34,36 @@ const CountersContainer = () => {
 
   const incrementCount = (increaseCount, counterId) => {
     const newCounters = counters.slice()
-    const newCounter = counters[counterId - 1]
+    const counterIndex = newCounters.findIndex((counter) => counter.id === counterId)
+    const newCounter = newCounters[counterIndex]
     if (increaseCount) {
       newCounter.count += 1
     } else {
       newCounter.count -= 1
     }
-    newCounters[counterId - 1] = newCounter
+    newCounters[counterIndex] = newCounter
     setCounters(newCounters)
 }
 
   const changeName = (counterId, textRef) => {
     const newCounters = counters.slice()
-    const newCounter = counters[counterId - 1]
+    const counterIndex = newCounters.findIndex((counter) => counter.id === counterId)
+    const newCounter = counters[counterIndex]
     if(textRef.current.innerText) {
         newCounter.name = textRef.current.innerText
     } else {
         newCounter.name = `Counter ${counterId}`
     }
-    newCounters[counterId - 1] = newCounter
+    newCounters[counterIndex] = newCounter
     setCounters(newCounters)
   }; 
 
   const handleDeleteCounter = (counterId) => {
+    const newQuantity = counterQuantity - 1;
     const indexOfCounter = counters.findIndex((counter) => counter.id === counterId)
-    console.log(indexOfCounter)
     const newCounters = [...counters.slice(0, indexOfCounter), ...counters.slice(indexOfCounter + 1)]
-    console.log(newCounters)
     setCounters(newCounters)
+    setCounterQuantity(newQuantity)
   }
 
   return (
