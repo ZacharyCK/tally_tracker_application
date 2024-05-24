@@ -68,11 +68,11 @@ const CountersContainer = () => {
 
   return (
     <div className="flex items-start justify-center">
-        <div className="flex">
-            {counters.map((counter) => (
-              <Counter key={counter.id} ID={counter.id} name={counter.name} count={counter.count} handleBlur={changeName} incrementCount={incrementCount} deleteCounter={handleDeleteCounter} />
-            ))}
-            <AddButton addCounter={addCounter} />
+        <div className="flex flex-wrap flex-col md:flex-row max-w-3xl justify-start">
+          {counters.map((counter) => (
+            <Counter key={counter.id} ID={counter.id} name={counter.name} count={counter.count} handleBlur={changeName} incrementCount={incrementCount} deleteCounter={handleDeleteCounter} />
+          ))}
+          <AddButton addCounter={addCounter} />
         </div>
     </div>
   )
