@@ -12,10 +12,11 @@ import './App.css'
 function App() {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(false);
-  const [session, setSession] = useState(null)
+  const [session, setSession] = useState(null);
+  const [redirectURL, setRedirectURL] = useState(`http://localhost:5173/profilesetup`)
+  const user = session ? session.user : null;
 
   useEffect(() => {
-
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
     })
@@ -29,8 +30,6 @@ function App() {
     return () => subscription.unsubscribe()
   }, [])
 
-
-
   const handleThemeChange = () => {
     setIsDarkTheme(!isDarkTheme)
   }
@@ -40,8 +39,8 @@ function App() {
       <Route path='/' element={<MainLayout changeTheme={handleThemeChange} isSignedIn={session} />}>
           <Route index element={<HomePage />} />
           <Route path='/signup' element={<SignUpPage isDarkTheme={isDarkTheme} />} />
-          <Route path='/login' element={<LogInPage isDarkTheme={isDarkTheme} />} />
-          <Route path='/profilesetup' element={<ProfileSetUp isDarkTheme={isDarkTheme} />} />
+          <Route path='/login' element={<LogInPage isDarkTheme={isDarkTheme} url={redirectURL} />} />
+          <Route path='/profilesetup' element={<ProfileSetUp isDarkTheme={isDarkTheme} currentUser={user} />} />
       </Route>
     )
   );

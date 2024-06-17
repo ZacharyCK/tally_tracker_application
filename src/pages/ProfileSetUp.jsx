@@ -1,8 +1,8 @@
 import ProfileForm from "../components/ProfileForm"
 
-const ProfileSetUp = () => {
+const ProfileSetUp = ({currentUser}) => {
   return (
-    <ProfileForm />
+    <ProfileForm currentUser={currentUser} />
   )
 }
 

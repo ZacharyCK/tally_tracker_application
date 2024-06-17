@@ -1,8 +1,8 @@
 import LogInForm from "../components/LogInForm"
 
-const LogInPage = ({isDarkTheme}) => {
+const LogInPage = ({isDarkTheme, url}) => {
   return (
-    <LogInForm isDarkTheme={isDarkTheme} />
+    <LogInForm isDarkTheme={isDarkTheme} url={url} />
   )
 }
 
