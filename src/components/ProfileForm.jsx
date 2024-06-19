@@ -20,23 +20,36 @@ const ProfileForm = ({currentUser}) => {
         })
     }
 
+    const insertData = async (counter_table_data, profile_table_data) => {
+        let { error } = await supabase
+            .rpc('initialize_user',
+                {counter_table_data, profile_table_data})
+        if (error) {
+            console.error(error)
+        } else {
+            navigate("/")
+        }
+        
+    }
+
     const handleCreateProfile = async (event) => {
         event.preventDefault();
+
         const { data: { user } } = await supabase.auth.getUser()
 
-        const { error } = await supabase
-            .from('Profiles')
-            .insert({ 
-                id: user.id,
-                first_name: formData.first_name,
-                last_name: formData.last_name,
-                user_name: formData.user_name,
-                email: user.email 
-            })
-        
-        if(!error) {
-            navigate('/')
+        const profile_table_data = {
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            user_name: formData.user_name,
+            email: user.email
         }
+
+        const counter_table_data = {
+            counter_name: 'Counter 1',
+            counter_quantity: 0
+        }
+
+        insertData(counter_table_data, profile_table_data);
     }
 
    
