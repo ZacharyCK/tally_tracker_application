@@ -37,7 +37,7 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path='/' element={<MainLayout changeTheme={handleThemeChange} isSignedIn={session} />}>
-          <Route index element={<HomePage />} />
+          <Route index element={<HomePage currentUser={user} />} />
           <Route path='/signup' element={<SignUpPage isDarkTheme={isDarkTheme} />} />
           <Route path='/login' element={<LogInPage isDarkTheme={isDarkTheme} url={redirectURL} />} />
           <Route path='/profilesetup' element={<ProfileSetUp isDarkTheme={isDarkTheme} currentUser={user} />} />

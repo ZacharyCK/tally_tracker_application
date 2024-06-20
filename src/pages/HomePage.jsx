@@ -1,8 +1,8 @@
 import CountersContainer from "../components/CountersContainer"
 
-const HomePage = () => {
+const HomePage = ({currentUser}) => {
   return (
-    <CountersContainer />
+    <CountersContainer currentUser={currentUser} />
   )
 }
 
