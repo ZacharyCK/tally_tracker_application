@@ -9,7 +9,11 @@ const SignUpForm = ({isDarkTheme}) => {
     const [password, setPassword] = useState('');
 
     const handleSignUp = async () => {
-        const { user, error } = await supabase.auth.signUp({ email, password });
+        const { user, error } = await supabase.auth.signUp({ email, password,
+            options: {
+                emailRedirectTo: 'https://tally-tracker-application.onrender.com/profilesetup'
+            }
+         });
         if (error) console.error('Error signing up:', error);
         else console.log('User signed up:', user);
     };
