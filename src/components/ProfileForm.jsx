@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import supabase from "../utils/supabase"
 
-const ProfileForm = ({currentUser}) => {
+const ProfileForm = ({currentUser, setProfile}) => {
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -27,6 +27,7 @@ const ProfileForm = ({currentUser}) => {
         if (error) {
             console.error(error)
         } else {
+            setProfile()
             navigate("/")
         }
         

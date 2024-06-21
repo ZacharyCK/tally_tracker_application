@@ -25,15 +25,27 @@ const HomePage = ({currentUser, counterQuantity, changeCounterQuantity}) => {
 
   checkProfile()
 
+  const handleProfileCreation = () => {
+    setProfileExists(true)
+  }
+
   return (
     <div>
-      {profileExists ? 
+      { (currentUser && profileExists) ? 
         <div>
           <HeaderText currentUser={currentUser} />
           <CountersContainer currentUser={currentUser} counterQuantity={counterQuantity} changeCounterQuantity={changeCounterQuantity} />
-        </div>
-        :
-        <ProfileForm currentUser={currentUser} />
+        </div> : 
+        (!currentUser && !profileExists ? 
+          <div>
+            <HeaderText currentUser={currentUser} />
+            <CountersContainer currentUser={currentUser} counterQuantity={counterQuantity} changeCounterQuantity={changeCounterQuantity} />
+          </div> 
+          :
+          <ProfileForm currentUser={currentUser} setProfile={handleProfileCreation} />
+        )
+         
+        
       }
       
     </div>
