@@ -41,8 +41,15 @@ const HomePage = ({currentUser, counterQuantity, changeCounterQuantity}) => {
             <HeaderText currentUser={currentUser} />
             <CountersContainer currentUser={currentUser} counterQuantity={counterQuantity} changeCounterQuantity={changeCounterQuantity} />
           </div> 
-          :
-          <ProfileForm currentUser={currentUser} setProfile={handleProfileCreation} />
+          : (currentUser && !profileExists ? 
+            <ProfileForm currentUser={currentUser} setProfile={handleProfileCreation} />
+            :
+            <div>
+              <HeaderText currentUser={currentUser} />
+              <CountersContainer currentUser={currentUser} counterQuantity={counterQuantity} changeCounterQuantity={changeCounterQuantity} />
+            </div> 
+          )
+          
         )
          
         
