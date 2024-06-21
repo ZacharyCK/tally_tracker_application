@@ -23,9 +23,9 @@ const LogInForm = ({isDarkTheme, url}) => {
     const getUrl = (needSignedUp) => {
         let redirectURL = ''
         if (needSignedUp) {
-            redirectURL += `http://localhost:5173/profilesetup`
+            redirectURL += `https://tally-tracker-application.onrender.com`
         } else {
-            redirectURL += `http://localhost:5173`
+            redirectURL += `https://tally-tracker-application.onrender.com`
         }
         return redirectURL
     }
