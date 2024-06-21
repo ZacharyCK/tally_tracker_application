@@ -1,11 +1,12 @@
 import { NavLink, useNavigate } from "react-router-dom"
 import supabase from "../utils/supabase"
 
-const Navbar = ({changeTheme, isSignedIn}) => {
+const Navbar = ({changeTheme, isSignedIn, resetCounterQuantity}) => {
   const navigate = useNavigate()
 
 
   const handleSignOut = async () => {
+    resetCounterQuantity(1)
     let { error } = await supabase.auth.signOut()
     if (error) {
       console.error("Error signing out: ", error)

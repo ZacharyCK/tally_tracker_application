@@ -1,8 +1,12 @@
 import CountersContainer from "../components/CountersContainer"
+import HeaderText from "../components/HeaderText"
 
-const HomePage = ({currentUser}) => {
+const HomePage = ({currentUser, counterQuantity, changeCounterQuantity}) => {
   return (
-    <CountersContainer currentUser={currentUser} />
+    <div>
+      <HeaderText currentUser={currentUser} />
+      <CountersContainer currentUser={currentUser} counterQuantity={counterQuantity} changeCounterQuantity={changeCounterQuantity} />
+    </div>
   )
 }
 

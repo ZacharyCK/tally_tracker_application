@@ -14,6 +14,7 @@ function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [session, setSession] = useState(null);
   const [redirectURL, setRedirectURL] = useState(`http://localhost:5173/profilesetup`)
+  const [counterQuantity, setCounterQuantity] = useState(1);
   const user = session ? session.user : null;
 
   useEffect(() => {
@@ -34,10 +35,14 @@ function App() {
     setIsDarkTheme(!isDarkTheme)
   }
 
+  const changeCounterQuantity = (number) => {
+    setCounterQuantity(number);
+  }
+
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path='/' element={<MainLayout changeTheme={handleThemeChange} isSignedIn={session} />}>
-          <Route index element={<HomePage currentUser={user} />} />
+      <Route path='/' element={<MainLayout changeTheme={handleThemeChange} isSignedIn={session} resetCounterQuantity={changeCounterQuantity} />}>
+          <Route index element={<HomePage currentUser={user} counterQuantity={counterQuantity} changeCounterQuantity={changeCounterQuantity} />} />
           <Route path='/signup' element={<SignUpPage isDarkTheme={isDarkTheme} />} />
           <Route path='/login' element={<LogInPage isDarkTheme={isDarkTheme} url={redirectURL} />} />
           <Route path='/profilesetup' element={<ProfileSetUp isDarkTheme={isDarkTheme} currentUser={user} />} />

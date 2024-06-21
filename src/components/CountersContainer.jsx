@@ -4,8 +4,8 @@ import AddButton from "./AddButton"
 
 import supabase from "../utils/supabase"
 
-const CountersContainer = ({currentUser}) => {
-  const [counterQuantity, setCounterQuantity] = useState(1);
+const CountersContainer = ({currentUser, counterQuantity, changeCounterQuantity}) => {
+  
   const [counters, setCounters] = useState([
     {
       id: counterQuantity,
@@ -17,14 +17,16 @@ const CountersContainer = ({currentUser}) => {
   useEffect(() => {
     // Verify whether a user is signed in or not (with user variable prop)
     if(currentUser) {
-      const getUserCounters = async () => {
+      const getAllCounters = async () => {
+        let numberOfUserCounters = 0;
         const {data, error} = await supabase
           .from('counters')
           .select()
-          .eq('profile_id', currentUser.id)
         setCounters(data)
+        numberOfUserCounters = data.filter((data) => data.profile_id === currentUser.id).length
+        changeCounterQuantity(numberOfUserCounters)
       }
-      getUserCounters()
+      getAllCounters()
     } else {
       setCounters([
         {
@@ -39,23 +41,40 @@ const CountersContainer = ({currentUser}) => {
     // user session null: don't do anything
   }, [currentUser])
 
+  const insertCounter = async (newCounter) => {
+    const { data, error } = await supabase
+      .from('counters')
+      .insert([
+        { counter_name: newCounter.counter_name, counter_quantity: newCounter.counter_quantity, profile_id: newCounter.profile_id },
+      ])
+      .select()
+    console.log(data)
+  }
+
   const addCounter = () => {
-    const newQuantity = counterQuantity + 1
-    const copyOfCounters = counters.slice()
-    const lastCounter = copyOfCounters.length ? copyOfCounters[copyOfCounters.length - 1] : null;
-    const newCounter = lastCounter ? {
+    const newQuantity = counterQuantity + 1 // number of counters increases by 1
+    const copyOfCounters = counters.slice() // create a copy of the counters array
+    const lastCounter = copyOfCounters.length ? copyOfCounters[copyOfCounters.length - 1] : null; // get last counter in array
+    const newCounter = !currentUser ?  // if there are other counters in the array
+      lastCounter ?  {
+        id: lastCounter.id + 1,
+        counter_name: `Counter ${newQuantity}`,
+        counter_quantity: 0
+      } : {
+        id: newQuantity,
+        counter_name: `Counter ${newQuantity}`,
+        counter_quantity: 0
+      }
+    : { // if there are NOT other counters in the array
       id: lastCounter.id + 1,
       counter_name: `Counter ${newQuantity}`,
-      counter_quantity: 0
-    } :
-    {
-      id: newQuantity,
-      counter_name: `Counter ${newQuantity}`,
-      counter_quantity: 0
+      counter_quantity: 0,
+      profile_id: currentUser.id
     };
+    if (currentUser) insertCounter(newCounter) // insert new counter into supabase database if a user is signed in
     console.log(newCounter)
     copyOfCounters.push(newCounter)
-    setCounterQuantity(newQuantity)
+    changeCounterQuantity(newQuantity)
     setCounters(copyOfCounters)
   }
 
@@ -83,41 +102,60 @@ const CountersContainer = ({currentUser}) => {
     updateUserCount(newCounter.counter_quantity, counterId)
     newCounters[counterIndex] = newCounter
     setCounters(newCounters)
-}
+  }
+
+  const updateNameInDB = async (counterName, counterId) => {
+    const { data, error } = await supabase
+      .from('counters')
+      .update({ counter_name: counterName })
+      .eq('id', counterId)
+      .select()
+    if (!error) {
+      console.log(data)
+    } else {
+      console.log(error)
+    }
+  }
 
   const changeName = (counterId, textRef) => {
     const newCounters = counters.slice()
     const counterIndex = newCounters.findIndex((counter) => counter.id === counterId)
-    const newCounter = counters[counterIndex]
-    const originalCounterName = newCounter.counter_name
+    const newCounter = newCounters[counterIndex]
     if(textRef.current.innerText) {
         newCounter.counter_name = textRef.current.innerText
     } else {
-        console.log(originalCounterName)
-        console.log(newCounter)
-        newCounter.counter_name = originalCounterName
-        console.log(newCounter.counter_name)
-        console.log(originalCounterName)
-        console.log(newCounter)
+        newCounter.counter_name = `Counter ${counterQuantity}`
     }
     newCounters[counterIndex] = newCounter
-    console.log(newCounters)
+    updateNameInDB(newCounter.counter_name, counterId)
     setCounters(newCounters)
-    console.log(counters)
   }; 
+
+  const deleteCounterInDB = async (counterId) => {
+    const { error } = await supabase
+      .from('counters')
+      .delete()
+      .eq('id', counterId)
+    if(error) {
+      console.log(error)
+    }
+  }
 
   const handleDeleteCounter = (counterId) => {
     const newQuantity = counterQuantity - 1;
     const indexOfCounter = counters.findIndex((counter) => counter.id === counterId)
     const newCounters = [...counters.slice(0, indexOfCounter), ...counters.slice(indexOfCounter + 1)]
+    deleteCounterInDB(counterId)
     setCounters(newCounters)
-    setCounterQuantity(newQuantity)
+    changeCounterQuantity(newQuantity)
   }
 
   return (
     <div className="flex items-start justify-center z-0">
         <div className="flex flex-wrap flex-col md:flex-row max-w-3xl justify-start">
-          {counters.map((counter) => (
+          {currentUser ? counters.filter((counter) => counter.profile_id === currentUser.id).map((userCounter) => (
+            <Counter key={userCounter.id} ID={userCounter.id} name={userCounter.counter_name} count={userCounter.counter_quantity} handleBlur={changeName} incrementCount={incrementCount} deleteCounter={handleDeleteCounter} />
+          )) : counters.map((counter) => (
             <Counter key={counter.id} ID={counter.id} name={counter.counter_name} count={counter.counter_quantity} handleBlur={changeName} incrementCount={incrementCount} deleteCounter={handleDeleteCounter} />
           ))}
           <AddButton addCounter={addCounter} />
